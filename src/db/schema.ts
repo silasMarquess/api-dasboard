@@ -6,7 +6,6 @@ import {
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core';
-import id from 'zod/v4/locales/id.js';
 
 export const salerTable = pgTable('salers', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -105,7 +104,7 @@ export const stockMovimentTable = pgTable('stockMoviment', {
     .notNull(),
 });
 
-export const stockMovimentRelation = relations(
+export const stockMovimentRelations = relations(
   stockMovimentTable,
   ({ one }) => ({
     stockDay: one(stockDayTable, {
@@ -115,6 +114,6 @@ export const stockMovimentRelation = relations(
   }),
 );
 
-export const stockdayrelations = relations(stockDayTable, ({ one, many }) => ({
+export const stockdayrelations = relations(stockDayTable, ({ many }) => ({
   stockerMivments: many(stockMovimentTable),
 }));

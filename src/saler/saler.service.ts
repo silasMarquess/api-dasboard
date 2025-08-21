@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSalerDto } from './dto/create-saler.dto';
-import { db } from 'src';
 import { salerTable } from 'src/db/schema';
 import { eq } from 'drizzle-orm';
+import { db } from 'src/db';
 
 @Injectable()
 export class SalerService {
@@ -14,7 +14,7 @@ export class SalerService {
   }
 
   async findAll() {
-    const sales = await db.select().from(salerTable);
+    const sales = await db;
     return sales;
   }
 

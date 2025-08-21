@@ -7,9 +7,7 @@ export class DataProcessService {
     const bookeSheet = xlsx.read(buffer, { type: 'buffer' });
     const sheetName = bookeSheet.SheetNames[0];
     const sheet = bookeSheet.Sheets[sheetName];
-    console.log(sheet);
     const sheetDataInJson = xlsx.utils.sheet_to_json(sheet, { range });
-    console.log(sheetDataInJson);
     return sheetDataInJson;
   }
 }
