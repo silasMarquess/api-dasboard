@@ -7,113 +7,140 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core';
 
+export const regionTable = pgTable('regions', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: varchar('name', { length: 100 }).notNull(),
+});
+
+export const regionRelations = relations(regionTable, ({ many }) => ({
+  clients: many(clientTable),
+}));
+
+export const clientTable = pgTable('clients', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  fullName: varchar('name', { length: 100 }).notNull(),
+  regionId: uuid('region_id').references(() => regionTable.id, {
+    onDelete: 'set null',
+  }),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull(),
+});
+
+export const clientRelations = relations(clientTable, ({ one, many }) => ({
+  region: one(regionTable, {
+    fields: [clientTable.regionId],
+    references: [regionTable.id],
+  }),
+
+  stockClients: one(stockClient, {
+    fields: [clientTable.id],
+    references: [stockClient.id_client],
+  }),
+
+  salers: many(salerTable),
+}));
+
+export const stockClient = pgTable('stock_clients', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  stockgaz: integer('stockgaz').notNull(),
+  relationModel: integer('relation_model').notNull(),
+  id_client: uuid('id_client')
+    .references(() => clientTable.id, {
+      onDelete: 'cascade',
+    })
+    .notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull(),
+});
+
+export const stockClientRelations = relations(stockClient, ({ one }) => ({
+  client: one(clientTable, {
+    fields: [stockClient.id_client],
+    references: [clientTable.id],
+  }),
+}));
+
+export const priceTable = pgTable('prices', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  description: varchar('description', { length: 100 }).notNull(),
+  priceInCents: integer('price_in_cents').notNull(),
+  id_products: uuid('id_products').references(() => productTable.id, {
+    onDelete: 'cascade',
+  }),
+});
+
+export const priceRelations = relations(priceTable, ({ one, many }) => ({
+  product: one(productTable, {
+    fields: [priceTable.id_products],
+    references: [productTable.id],
+  }),
+  salers: many(salerTable),
+}));
+
+export const productTable = pgTable('products', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  name: varchar('name', { length: 100 }).notNull(),
+  priceInCents: integer('price_in_cents').notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull(),
+});
+
+export const productRelations = relations(productTable, ({ many }) => ({
+  prices: many(priceTable),
+}));
+
 export const salerTable = pgTable('salers', {
   id: uuid('id').primaryKey().defaultRandom(),
-  productId: integer('id_product').notNull(),
+  paymentType: integer('payment_type').notNull(),
+  date: timestamp('date', { withTimezone: true }),
+  valuePaidInCents: integer('value_paid_in_cents').notNull(),
+  discountInCents: integer('discount_in_cents').notNull(),
   quantity: integer('quantity').notNull(),
-  date: timestamp('date').notNull(),
-  productPriceInCents: integer('product_price_in_cents').notNull(),
-  deleveryManId: uuid('delivery_man_id').references(() => deliveryManTable.id, {
+  id_tableprice: uuid('id_tableprice').references(() => priceTable.id, {
     onDelete: 'set null',
   }),
-
-  wholerSalerId: uuid('wholer_saler_id').references(() => wholerSalerTable.id, {
+  id_client: uuid('id_client').references(() => clientTable.id, {
     onDelete: 'set null',
   }),
-
-  createdAt: timestamp('created_at').notNull().defaultNow(),
-  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  id_deliveryman: uuid('id_deliveryman').references(
+    () => delieveryManTable.id,
+    {
+      onDelete: 'set null',
+    },
+  ),
 });
 
-export const salerRelation = relations(salerTable, ({ one, many }) => ({
-  deleveryMan: one(deliveryManTable, {
-    fields: [salerTable.deleveryManId],
-    references: [deliveryManTable.id],
+export const salerRelations = relations(salerTable, ({ one }) => ({
+  deliveryMan: one(delieveryManTable, {
+    fields: [salerTable.id_deliveryman],
+    references: [delieveryManTable.id],
   }),
 
-  payments: many(paymentTable),
-  wholesaler: one(wholerSalerTable, {
-    fields: [salerTable.wholerSalerId],
-    references: [wholerSalerTable.id],
+  tablePrice: one(priceTable, {
+    fields: [salerTable.id_tableprice],
+    references: [priceTable.id],
   }),
-}));
 
-export const deliveryManTable = pgTable('deliveryManTable', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  fullName: varchar('name').notNull(),
-  inDate: timestamp('in_date').notNull(),
-  outDate: timestamp('out_date'),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
-  updatedAt: timestamp('updated_at').notNull().defaultNow(),
-});
-
-export const deleveryManRelations = relations(deliveryManTable, ({ many }) => ({
-  salers: many(salerTable),
-}));
-
-export const wholerSalerTable = pgTable('wholerSalerTable', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  name: varchar('name').notNull(),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
-  updatedAt: timestamp('updated_at').notNull().defaultNow(),
-});
-
-export const wholerSalerRelations = relations(wholerSalerTable, ({ many }) => ({
-  salers: many(salerTable),
-}));
-
-export const paymentTable = pgTable('payments', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  paymentDate: timestamp('date').notNull(),
-  paymenValueInCents: integer('value_in_cents').notNull(),
-  discountValueInCents: integer('discount_value_in_cents').notNull(),
-  typePay: integer('typepay').notNull(),
-  id_saler: uuid('id_saler')
-    .references(() => salerTable.id, {
-      onDelete: 'cascade',
-    })
-    .notNull(),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
-  updatedAt: timestamp('updated_at').notNull().defaultNow(),
-});
-
-export const payRelation = relations(paymentTable, ({ one }) => ({
-  saler: one(salerTable, {
-    fields: [paymentTable.id_saler],
-    references: [salerTable.id],
+  client: one(clientTable, {
+    fields: [salerTable.id_client],
+    references: [clientTable.id],
   }),
 }));
 
-export const stockDayTable = pgTable('stocks', {
-  id: uuid('id_stockDay').primaryKey().defaultRandom(),
-  date: timestamp('date').notNull(),
-  stock: integer('quantity').notNull(),
-  stockStart: integer('quantity_start').notNull(),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
-  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+export const delieveryManTable = pgTable('delivery_mans', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  fullName: varchar('name', { length: 100 }).notNull(),
 });
 
-export const stockMovimentTable = pgTable('stockMoviment', {
-  id: uuid('id_stockMoviment').primaryKey().defaultRandom(),
-  quantity: integer('quantity').notNull(),
-  type: integer('type').notNull(),
-  stockDay_id: uuid('stockday_id')
-    .references(() => stockDayTable.id, {
-      onDelete: 'cascade',
-    })
-    .notNull(),
-});
-
-export const stockMovimentRelations = relations(
-  stockMovimentTable,
-  ({ one }) => ({
-    stockDay: one(stockDayTable, {
-      fields: [stockMovimentTable.stockDay_id],
-      references: [stockDayTable.id],
-    }),
+export const deliveryManRelations = relations(
+  delieveryManTable,
+  ({ many }) => ({
+    salers: many(salerTable),
   }),
 );
-
-export const stockdayrelations = relations(stockDayTable, ({ many }) => ({
-  stockerMivments: many(stockMovimentTable),
-}));
