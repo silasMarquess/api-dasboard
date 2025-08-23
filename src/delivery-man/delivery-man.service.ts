@@ -3,6 +3,12 @@ import { CreateDeliveryManDto } from './dto/create-delivery-man.dto';
 import { UpdateDeliveryManDto } from './dto/update-delivery-man.dto';
 import { db } from 'src/db';
 import { deliveryManTable } from 'src/db/schema';
+import { eq } from 'drizzle-orm';
+
+export interface pageProps {
+  title: string;
+  header: string;
+}
 
 @Injectable()
 export class DeliveryManService {
@@ -15,16 +21,16 @@ export class DeliveryManService {
   }
 
   async findAll() {
-    return await db.select().from(deliveryManTable);
+    return await db.query.delieveryManTable.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} deliveryMan`;
+  async findOne(delieveryManId: string) {
+    const deliveryMan = await db.query.delieveryManTable.findMany({
+      where: eq(deliveryManTable.id, id),
+    });
   }
 
-  update(id: number, updateDeliveryManDto: UpdateDeliveryManDto) {
-    return `This action updates a #${id} deliveryMan`;
-  }
+  update(id: number, updateDeliveryManDto: UpdateDeliveryManDto) {}
 
   remove(id: number) {
     return `This action removes a #${id} deliveryMan`;

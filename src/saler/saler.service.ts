@@ -4,6 +4,7 @@ import { salerTable } from 'src/db/schema';
 import { eq } from 'drizzle-orm';
 import { db } from 'src/db';
 
+
 @Injectable()
 export class SalerService {
   async create(createSalerDto: CreateSalerDto) {
