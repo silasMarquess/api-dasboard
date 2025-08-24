@@ -1,0 +1,1 @@
+ALTER TABLE "regions" ADD CONSTRAINT "regions_description_unique" UNIQUE("description");

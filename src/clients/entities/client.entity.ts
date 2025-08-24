@@ -1,7 +1,6 @@
-export class DeliveryMan {
+export class Client {
   id: string;
   fullName: string;
-  inDate: Date;
   created_at: Date;
   updated_at: Date;
 }

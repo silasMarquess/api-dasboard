@@ -9,7 +9,10 @@ import {
 
 export const regionTable = pgTable('regions', {
   id: uuid('id').primaryKey().defaultRandom(),
-  name: varchar('name', { length: 100 }).notNull(),
+  description: varchar('description', { length: 100 }).notNull().unique(),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
 });
 
 export const regionRelations = relations(regionTable, ({ many }) => ({
@@ -18,14 +21,13 @@ export const regionRelations = relations(regionTable, ({ many }) => ({
 
 export const clientTable = pgTable('clients', {
   id: uuid('id').primaryKey().defaultRandom(),
-  fullName: varchar('name', { length: 100 }).notNull(),
+  fullName: varchar('name', { length: 100 }).notNull().unique(),
   regionId: uuid('region_id').references(() => regionTable.id, {
     onDelete: 'set null',
   }),
   createdAt: timestamp('created_at', { withTimezone: true })
     .notNull()
     .defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull(),
 });
 
 export const clientRelations = relations(clientTable, ({ one, many }) => ({
@@ -54,7 +56,6 @@ export const stockClient = pgTable('stock_clients', {
   createdAt: timestamp('created_at', { withTimezone: true })
     .notNull()
     .defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull(),
 });
 
 export const stockClientRelations = relations(stockClient, ({ one }) => ({
@@ -66,11 +67,17 @@ export const stockClientRelations = relations(stockClient, ({ one }) => ({
 
 export const priceTable = pgTable('prices', {
   id: uuid('id').primaryKey().defaultRandom(),
-  description: varchar('description', { length: 100 }).notNull(),
+  description: varchar('description', { length: 100 }).notNull().unique(),
   priceInCents: integer('price_in_cents').notNull(),
   id_products: uuid('id_products').references(() => productTable.id, {
     onDelete: 'cascade',
   }),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
 });
 
 export const priceRelations = relations(priceTable, ({ one, many }) => ({
@@ -83,12 +90,14 @@ export const priceRelations = relations(priceTable, ({ one, many }) => ({
 
 export const productTable = pgTable('products', {
   id: uuid('id').primaryKey().defaultRandom(),
-  name: varchar('name', { length: 100 }).notNull(),
+  name: varchar('name', { length: 100 }).notNull().unique(),
   priceInCents: integer('price_in_cents').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true })
     .notNull()
     .defaultNow(),
-  updatedAt: timestamp('updated_at', { withTimezone: true }).notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
 });
 
 export const productRelations = relations(productTable, ({ many }) => ({
@@ -108,18 +117,18 @@ export const salerTable = pgTable('salers', {
   id_client: uuid('id_client').references(() => clientTable.id, {
     onDelete: 'set null',
   }),
-  id_deliveryman: uuid('id_deliveryman').references(
-    () => delieveryManTable.id,
-    {
-      onDelete: 'set null',
-    },
-  ),
+  id_deliveryman: uuid('id_deliveryman').references(() => deliveryManTable.id, {
+    onDelete: 'set null',
+  }),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
 });
 
 export const salerRelations = relations(salerTable, ({ one }) => ({
-  deliveryMan: one(delieveryManTable, {
+  deliveryMan: one(deliveryManTable, {
     fields: [salerTable.id_deliveryman],
-    references: [delieveryManTable.id],
+    references: [deliveryManTable.id],
   }),
 
   tablePrice: one(priceTable, {
@@ -133,14 +142,16 @@ export const salerRelations = relations(salerTable, ({ one }) => ({
   }),
 }));
 
-export const delieveryManTable = pgTable('delivery_mans', {
+export const deliveryManTable = pgTable('delivery_mans', {
   id: uuid('id').primaryKey().defaultRandom(),
-  fullName: varchar('name', { length: 100 }).notNull(),
+  fullName: varchar('name', { length: 100 }).notNull().unique(),
+  dateIn: timestamp('date_in', { withTimezone: true }).notNull(),
+  birthDate: timestamp('birth_date', { withTimezone: true }).notNull(),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
 });
 
-export const deliveryManRelations = relations(
-  delieveryManTable,
-  ({ many }) => ({
-    salers: many(salerTable),
-  }),
-);
+export const deliveryManRelations = relations(deliveryManTable, ({ many }) => ({
+  salers: many(salerTable),
+}));

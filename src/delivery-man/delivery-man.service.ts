@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDeliveryManDto } from './dto/create-delivery-man.dto';
-import { UpdateDeliveryManDto } from './dto/update-delivery-man.dto';
+
 import { db } from 'src/db';
-import { deliveryManTable } from 'src/db/schema';
+
 import { eq } from 'drizzle-orm';
+import { deliveryManTable } from 'src/db/schema';
 
 export interface pageProps {
   title: string;
@@ -16,23 +17,30 @@ export class DeliveryManService {
     const deliveryMan = await db
       .insert(deliveryManTable)
       .values(createDeliveryManDto);
-
     return deliveryMan;
   }
 
   async findAll() {
-    return await db.query.delieveryManTable.findMany();
+    return await db.query.deliveryManTable.findMany();
   }
 
-  async findOne(delieveryManId: string) {
-    const deliveryMan = await db.query.delieveryManTable.findMany({
+  async findById(id: string) {
+    return await db.query.deliveryManTable.findFirst({
       where: eq(deliveryManTable.id, id),
     });
   }
 
-  update(id: number, updateDeliveryManDto: UpdateDeliveryManDto) {}
+  async update(
+    deliveryManId: string,
+    updateData: Partial<CreateDeliveryManDto>,
+  ) {
+    await db
+      .update(deliveryManTable)
+      .set(updateData)
+      .where(eq(deliveryManTable.id, deliveryManId));
+  }
 
-  remove(id: number) {
-    return `This action removes a #${id} deliveryMan`;
+  async remove(id: string) {
+    await db.delete(deliveryManTable).where(eq(deliveryManTable.id, id));
   }
 }

@@ -1,0 +1,1 @@
+ALTER TABLE "delivery_mans" DROP COLUMN "out_date";

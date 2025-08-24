@@ -1,9 +1,10 @@
 export class Saler {
   id: string;
-  productName: string;
+  paymentType: number;
   date: Date;
+  valuePaidInCents: number;
+  discountInCents: string;
   quantity: number;
-  productPriceInCents: number;
   createdAt: Date;
   updatedAt: Date;
 }
