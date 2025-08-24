@@ -22,6 +22,7 @@ export const regionRelations = relations(regionTable, ({ many }) => ({
 export const clientTable = pgTable('clients', {
   id: uuid('id').primaryKey().defaultRandom(),
   fullName: varchar('name', { length: 100 }).notNull().unique(),
+  stockGaz: integer('stock_gaz').notNull().default(0),
   regionId: uuid('region_id').references(() => regionTable.id, {
     onDelete: 'set null',
   }),
@@ -36,35 +37,8 @@ export const clientRelations = relations(clientTable, ({ one, many }) => ({
     references: [regionTable.id],
   }),
 
-  stockClients: one(stockClient, {
-    fields: [clientTable.id],
-    references: [stockClient.id_client],
-  }),
-
   salers: many(salerTable),
 }));
-
-export const stockClient = pgTable('stock_clients', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  stockgaz: integer('stockgaz').notNull(),
-  relationModel: integer('relation_model').notNull(),
-  id_client: uuid('id_client')
-    .references(() => clientTable.id, {
-      onDelete: 'cascade',
-    })
-    .notNull(),
-  createdAt: timestamp('created_at', { withTimezone: true })
-    .notNull()
-    .defaultNow(),
-});
-
-export const stockClientRelations = relations(stockClient, ({ one }) => ({
-  client: one(clientTable, {
-    fields: [stockClient.id_client],
-    references: [clientTable.id],
-  }),
-}));
-
 export const priceTable = pgTable('prices', {
   id: uuid('id').primaryKey().defaultRandom(),
   description: varchar('description', { length: 100 }).notNull().unique(),
@@ -79,7 +53,6 @@ export const priceTable = pgTable('prices', {
     .notNull()
     .defaultNow(),
 });
-
 export const priceRelations = relations(priceTable, ({ one, many }) => ({
   product: one(productTable, {
     fields: [priceTable.id_products],
@@ -87,11 +60,10 @@ export const priceRelations = relations(priceTable, ({ one, many }) => ({
   }),
   salers: many(salerTable),
 }));
-
 export const productTable = pgTable('products', {
   id: uuid('id').primaryKey().defaultRandom(),
-  name: varchar('name', { length: 100 }).notNull().unique(),
-  priceInCents: integer('price_in_cents').notNull(),
+  description: varchar('description', { length: 100 }).notNull().unique(),
+
   createdAt: timestamp('created_at', { withTimezone: true })
     .notNull()
     .defaultNow(),
@@ -100,9 +72,34 @@ export const productTable = pgTable('products', {
     .defaultNow(),
 });
 
-export const productRelations = relations(productTable, ({ many }) => ({
-  prices: many(priceTable),
+export const productTableRelations = relations(productTable, ({ many }) => ({
+  productStock: many(productStockTable),
 }));
+
+export const productStockTable = pgTable('product_stocks', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  description: varchar('description', { length: 100 }).notNull().unique(),
+  stock: integer('stock').notNull().default(0),
+  id_product: uuid('id_product').references(() => productTable.id, {
+    onDelete: 'cascade',
+  }),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+
+export const productStockTableRelations = relations(
+  productStockTable,
+  ({ one }) => ({
+    product: one(productTable, {
+      fields: [productStockTable.id_product],
+      references: [productTable.id],
+    }),
+  }),
+);
 
 export const salerTable = pgTable('salers', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -124,7 +121,6 @@ export const salerTable = pgTable('salers', {
     .notNull()
     .defaultNow(),
 });
-
 export const salerRelations = relations(salerTable, ({ one }) => ({
   deliveryMan: one(deliveryManTable, {
     fields: [salerTable.id_deliveryman],
@@ -141,7 +137,6 @@ export const salerRelations = relations(salerTable, ({ one }) => ({
     references: [clientTable.id],
   }),
 }));
-
 export const deliveryManTable = pgTable('delivery_mans', {
   id: uuid('id').primaryKey().defaultRandom(),
   fullName: varchar('name', { length: 100 }).notNull().unique(),
@@ -151,7 +146,6 @@ export const deliveryManTable = pgTable('delivery_mans', {
     .notNull()
     .defaultNow(),
 });
-
 export const deliveryManRelations = relations(deliveryManTable, ({ many }) => ({
   salers: many(salerTable),
 }));

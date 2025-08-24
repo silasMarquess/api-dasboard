@@ -20,34 +20,34 @@ export class ClientsController {
   @Post()
   @ApiResponse({ status: 201, description: 'Client created successfully.' })
   @ApiBody({ type: CreateClientDto })
-  create(@Body() createClientDto: CreateClientDto) {
-    return this.clientsService.create(createClientDto);
+  async create(@Body() createClientDto: CreateClientDto) {
+    return await this.clientsService.create(createClientDto);
   }
 
   @Get()
   @ApiResponse({ status: 200, description: 'Clients retrieved successfully.' })
-  findAll() {
-    return this.clientsService.findAll();
+  async findAll() {
+    return await this.clientsService.findAll();
   }
 
   @Get(':id')
   @ApiResponse({ status: 200, description: 'Client retrieved successfully.' })
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.clientsService.findOne(id);
   }
 
   @Patch(':id')
   @ApiResponse({ status: 200, description: 'Client updated successfully.' })
-  update(
+  async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateClientDto: UpdateClientDto,
   ) {
-    return this.clientsService.update(id, updateClientDto);
+    return await this.clientsService.update(id, updateClientDto);
   }
 
   @Delete(':id')
   @ApiResponse({ status: 200, description: 'Client removed successfully.' })
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.clientsService.remove(id);
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.clientsService.remove(id);
   }
 }

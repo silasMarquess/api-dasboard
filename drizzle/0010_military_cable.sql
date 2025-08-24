@@ -1,0 +1,1 @@
+ALTER TABLE "clients" ALTER COLUMN "stock_gaz" SET DEFAULT 0;

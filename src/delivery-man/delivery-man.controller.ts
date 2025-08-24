@@ -27,8 +27,8 @@ export class DeliveryManController {
   })
   @ApiBody({ type: CreateDeliveryManDto })
   @UsePipes(new ConvertToDatePipe())
-  create(@Body() createDeliveryManDto: CreateDeliveryManDto) {
-    return this.deliveryManService.create(createDeliveryManDto);
+  async create(@Body() createDeliveryManDto: CreateDeliveryManDto) {
+    return await this.deliveryManService.create(createDeliveryManDto);
   }
 
   @Get()
@@ -36,8 +36,8 @@ export class DeliveryManController {
     status: 200,
     description: 'Delivery men retrieved successfully',
   })
-  findAll() {
-    return this.deliveryManService.findAll();
+  async findAll() {
+    return await this.deliveryManService.findAll();
   }
 
   @Get(':id')
@@ -45,8 +45,8 @@ export class DeliveryManController {
     status: 200,
     description: 'Delivery man retrieved successfully',
   })
-  findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.deliveryManService.findById(id);
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.deliveryManService.findById(id);
   }
 
   @Patch(':id')
@@ -55,15 +55,15 @@ export class DeliveryManController {
     description: 'Delivery man updated successfully',
   })
   @ApiBody({ type: UpdateDeliveryManDto })
-  update(
+  async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateDeliveryManDto: UpdateDeliveryManDto,
   ) {
-    return this.deliveryManService.update(id, updateDeliveryManDto);
+    return await this.deliveryManService.update(id, updateDeliveryManDto);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: string) {
-    return this.deliveryManService.remove(id);
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.deliveryManService.remove(id);
   }
 }
