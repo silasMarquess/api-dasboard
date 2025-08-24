@@ -15,6 +15,7 @@ export class ProductsService {
     return await db.query.productTable.findMany({
       with: {
         productStock: true,
+        prices: true,
       },
     });
   }
@@ -24,6 +25,7 @@ export class ProductsService {
       where: eq(productTable.id, id),
       with: {
         productStock: true,
+        prices: true,
       },
     });
   }

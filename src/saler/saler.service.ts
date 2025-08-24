@@ -14,16 +14,26 @@ export class SalerService {
   }
 
   async findAll() {
-    const sales = await db.query.salerTable.findMany();
+    const sales = await db.query.salerTable.findMany({
+      with: {
+        deliveryMan: true,
+        tablePrice: true,
+        client: true,
+      },
+    });
     return sales;
   }
 
   async findOne(id: string) {
-    const sale = await db
-      .select()
-      .from(salerTable)
-      .where(eq(salerTable.id, id));
-    return sale;
+    const sales = await db.query.salerTable.findMany({
+      where: eq(salerTable.id, id),
+      with: {
+        deliveryMan: true,
+        tablePrice: true,
+        client: true,
+      },
+    });
+    return sales;
   }
 
   async update(idSaler: string, updateSalerDto: CreateSalerDto) {

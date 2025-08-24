@@ -53,6 +53,7 @@ export const priceTable = pgTable('prices', {
     .notNull()
     .defaultNow(),
 });
+
 export const priceRelations = relations(priceTable, ({ one, many }) => ({
   product: one(productTable, {
     fields: [priceTable.id_products],
@@ -74,6 +75,7 @@ export const productTable = pgTable('products', {
 
 export const productTableRelations = relations(productTable, ({ many }) => ({
   productStock: many(productStockTable),
+  prices: many(priceTable),
 }));
 
 export const productStockTable = pgTable('product_stocks', {
@@ -108,12 +110,17 @@ export const salerTable = pgTable('salers', {
   valuePaidInCents: integer('value_paid_in_cents').notNull(),
   discountInCents: integer('discount_in_cents').notNull(),
   quantity: integer('quantity').notNull(),
-  id_tableprice: uuid('id_tableprice').references(() => priceTable.id, {
-    onDelete: 'set null',
-  }),
-  id_client: uuid('id_client').references(() => clientTable.id, {
-    onDelete: 'set null',
-  }),
+  id_tableprice: uuid('id_tableprice')
+    .references(() => priceTable.id, {
+      onDelete: 'set null',
+    })
+    .notNull(),
+  id_client: uuid('id_client')
+    .references(() => clientTable.id, {
+      onDelete: 'set null',
+    })
+    .notNull(),
+
   id_deliveryman: uuid('id_deliveryman').references(() => deliveryManTable.id, {
     onDelete: 'set null',
   }),
