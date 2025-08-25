@@ -1,0 +1,1 @@
+ALTER TABLE "prices" ALTER COLUMN "id_products" SET NOT NULL;

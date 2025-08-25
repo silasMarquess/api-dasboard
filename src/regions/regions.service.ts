@@ -12,11 +12,16 @@ export class RegionsService {
   }
 
   async findAll() {
-    return await db.select().from(regionTable);
+    return await db.query.regionTable.findMany({
+      with: { clients: true },
+    });
   }
 
   async findOne(id: string) {
-    return await db.select().from(regionTable).where(eq(regionTable.id, id));
+    return await db.query.regionTable.findFirst({
+      where: eq(regionTable.id, id),
+      with: { clients: true },
+    });
   }
 
   async update(id: string, updateRegionDto: UpdateRegionDto) {

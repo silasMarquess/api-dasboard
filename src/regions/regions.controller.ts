@@ -35,10 +35,8 @@ export class RegionsController {
     status: 200,
     description: 'Regions retrieved successfully',
   })
-  async findAll(@Res() res: express.Response) {
-    return res.status(200).json({
-      regions: await this.regionsService.findAll(),
-    });
+  async findAll() {
+    return await this.regionsService.findAll();
   }
 
   @Get(':id')

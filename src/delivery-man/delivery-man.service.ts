@@ -21,7 +21,11 @@ export class DeliveryManService {
   }
 
   async findAll() {
-    return await db.query.deliveryManTable.findMany();
+    return await db.query.deliveryManTable.findMany({
+      with: {
+        salers: true,
+      },
+    });
   }
 
   async findById(id: string) {

@@ -12,14 +12,13 @@ export class ProductStockService {
   }
 
   async findAll() {
-    return await db.select().from(productStockTable);
+    return await db.query.productStockTable.findMany();
   }
 
   async findOne(id: string) {
-    return await db
-      .select()
-      .from(productStockTable)
-      .where(eq(productStockTable.id, id));
+    return await db.query.productStockTable.findFirst({
+      where: eq(productStockTable.id, id),
+    });
   }
 
   async update(id: string, updateProductStockDto: UpdateProductStockDto) {

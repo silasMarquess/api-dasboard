@@ -43,9 +43,11 @@ export const priceTable = pgTable('prices', {
   id: uuid('id').primaryKey().defaultRandom(),
   description: varchar('description', { length: 100 }).notNull().unique(),
   priceInCents: integer('price_in_cents').notNull(),
-  id_products: uuid('id_products').references(() => productTable.id, {
-    onDelete: 'cascade',
-  }),
+  id_products: uuid('id_products')
+    .references(() => productTable.id, {
+      onDelete: 'cascade',
+    })
+    .notNull(),
   createdAt: timestamp('created_at', { withTimezone: true })
     .notNull()
     .defaultNow(),
