@@ -22,6 +22,6 @@ export class CreateSalerDto {
   @ApiProperty({ example: '1edf80e8-fb2e-4ad8-bf00-2f15b36ce2ce' })
   id_client: string;
 
-  @ApiProperty({ example: '40c27332-4576-40cc-be99-d75669e75556' })
-  id_deliveryman?: string;
+  @ApiProperty({ example: 0 })
+  status: number;
 }

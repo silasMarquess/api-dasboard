@@ -12,11 +12,31 @@ export class ClientsService {
   }
 
   async findAll() {
-    return await db.select().from(clientTable);
+    return await db.query.clientTable.findMany({
+      with: {
+        region: true,
+        constracts: {
+          with: {
+            product: true,
+          },
+        },
+      },
+    });
   }
 
   async findOne(id: string) {
-    return await db.select().from(clientTable).where(eq(clientTable.id, id));
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return await db.query.clientTable.findFirst({
+      where: eq(clientTable.id, id),
+      with: {
+        region: true,
+        constracts: {
+          with: {
+            product: true,
+          },
+        },
+      },
+    });
   }
 
   async update(id: string, updateClientDto: UpdateClientDto) {

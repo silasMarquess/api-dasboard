@@ -7,16 +7,18 @@ import { db } from 'src/db';
 @Injectable()
 export class SalerService {
   async create(createSalerDto: CreateSalerDto) {
-    const salerCreated = await db.insert(salerTable).values({
-      ...createSalerDto,
-    });
-    return salerCreated;
+    const salerCreated = await db
+      .insert(salerTable)
+      .values({
+        ...createSalerDto,
+      })
+      .returning({ idNewSaler: salerTable.id });
+    return salerCreated[0].idNewSaler;
   }
 
   async findAll() {
     const sales = await db.query.salerTable.findMany({
       with: {
-        deliveryMan: true,
         tablePrice: true,
         client: true,
       },
@@ -28,7 +30,6 @@ export class SalerService {
     const sales = await db.query.salerTable.findMany({
       where: eq(salerTable.id, id),
       with: {
-        deliveryMan: true,
         tablePrice: true,
         client: true,
       },

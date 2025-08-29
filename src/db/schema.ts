@@ -6,6 +6,7 @@ import {
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core';
+import { number } from 'zod';
 
 export const regionTable = pgTable('regions', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -22,7 +23,6 @@ export const regionRelations = relations(regionTable, ({ many }) => ({
 export const clientTable = pgTable('clients', {
   id: uuid('id').primaryKey().defaultRandom(),
   fullName: varchar('name', { length: 100 }).notNull().unique(),
-  stockGaz: integer('stock_gaz').notNull().default(0),
   regionId: uuid('region_id').references(() => regionTable.id, {
     onDelete: 'set null',
   }),
@@ -36,9 +36,10 @@ export const clientRelations = relations(clientTable, ({ one, many }) => ({
     fields: [clientTable.regionId],
     references: [regionTable.id],
   }),
-
   salers: many(salerTable),
+  constracts: many(constractTable),
 }));
+
 export const priceTable = pgTable('prices', {
   id: uuid('id').primaryKey().defaultRandom(),
   description: varchar('description', { length: 100 }).notNull().unique(),
@@ -56,6 +57,33 @@ export const priceTable = pgTable('prices', {
     .defaultNow(),
 });
 
+export const constractTable = pgTable('contracts', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  id_client: uuid('id_client').references(() => clientTable.id, {
+    onDelete: 'set null',
+  }),
+  id_product: uuid('id_product').references(() => productTable.id, {
+    onDelete: 'set null',
+  }),
+  quantity: integer('quantity').notNull(),
+  status: integer('status').notNull(), //0-abeta //1 - fechada 3-//cancelada)
+  condition: integer('condition').notNull(),
+  dateStart: timestamp('date_start', { withTimezone: true }).notNull(),
+  dateEnd: timestamp('date_end', { withTimezone: true }),
+});
+
+export const constractRelations = relations(constractTable, ({ one }) => ({
+  client: one(clientTable, {
+    fields: [constractTable.id_client],
+    references: [clientTable.id],
+  }),
+
+  product: one(productTable, {
+    fields: [constractTable.id_product],
+    references: [productTable.id],
+  }),
+}));
+
 export const priceRelations = relations(priceTable, ({ one, many }) => ({
   product: one(productTable, {
     fields: [priceTable.id_products],
@@ -63,6 +91,7 @@ export const priceRelations = relations(priceTable, ({ one, many }) => ({
   }),
   salers: many(salerTable),
 }));
+
 export const productTable = pgTable('products', {
   id: uuid('id').primaryKey().defaultRandom(),
   description: varchar('description', { length: 100 }).notNull().unique(),
@@ -78,6 +107,7 @@ export const productTable = pgTable('products', {
 export const productTableRelations = relations(productTable, ({ many }) => ({
   productStock: many(productStockTable),
   prices: many(priceTable),
+  Contract: many(constractTable),
 }));
 
 export const productStockTable = pgTable('product_stocks', {
@@ -123,19 +153,40 @@ export const salerTable = pgTable('salers', {
     })
     .notNull(),
 
-  id_deliveryman: uuid('id_deliveryman').references(() => deliveryManTable.id, {
-    onDelete: 'set null',
-  }),
+  status: integer('status').notNull(), //0-abeta //1 - fechada 3-//cancelada
+
   createdAt: timestamp('created_at', { withTimezone: true })
     .notNull()
     .defaultNow(),
 });
-export const salerRelations = relations(salerTable, ({ one }) => ({
-  deliveryMan: one(deliveryManTable, {
-    fields: [salerTable.id_deliveryman],
-    references: [deliveryManTable.id],
+
+export const deliveryTable = pgTable('deliveries', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  id_saler: uuid('id_saler')
+    .references(() => salerTable.id, {
+      onDelete: 'set null',
+    })
+    .notNull(),
+  id_deliveryman: uuid('id_deliveryman')
+    .references(() => deliveryManTable.id, {
+      onDelete: 'set null',
+    })
+    .notNull(),
+});
+
+export const deliveryTableRelations = relations(deliveryTable, ({ one }) => ({
+  saler: one(salerTable, {
+    fields: [deliveryTable.id_saler],
+    references: [salerTable.id],
   }),
 
+  deliveryMan: one(deliveryManTable, {
+    fields: [deliveryTable.id_deliveryman],
+    references: [deliveryManTable.id],
+  }),
+}));
+
+export const salerRelations = relations(salerTable, ({ one }) => ({
   tablePrice: one(priceTable, {
     fields: [salerTable.id_tableprice],
     references: [priceTable.id],
@@ -146,6 +197,7 @@ export const salerRelations = relations(salerTable, ({ one }) => ({
     references: [clientTable.id],
   }),
 }));
+
 export const deliveryManTable = pgTable('delivery_mans', {
   id: uuid('id').primaryKey().defaultRandom(),
   fullName: varchar('name', { length: 100 }).notNull().unique(),
@@ -155,6 +207,7 @@ export const deliveryManTable = pgTable('delivery_mans', {
     .notNull()
     .defaultNow(),
 });
+
 export const deliveryManRelations = relations(deliveryManTable, ({ many }) => ({
-  salers: many(salerTable),
+  deliveries: many(deliveryTable),
 }));

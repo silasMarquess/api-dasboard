@@ -23,7 +23,7 @@ export class DeliveryManService {
   async findAll() {
     return await db.query.deliveryManTable.findMany({
       with: {
-        salers: true,
+        deliveries: true,
       },
     });
   }
