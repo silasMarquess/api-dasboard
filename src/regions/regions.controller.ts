@@ -24,10 +24,8 @@ export class RegionsController {
     description: 'Region created successfully',
   })
   @ApiBody({ type: CreateRegionDto })
-  async create(@Body() createRegionDto: CreateRegionDto) {
-    return {
-      regionCreated: await this.regionsService.create(createRegionDto),
-    };
+  create(@Body() createRegionDto: CreateRegionDto) {
+    return this.regionsService.create(createRegionDto);
   }
 
   @Get()
@@ -35,8 +33,8 @@ export class RegionsController {
     status: 200,
     description: 'Regions retrieved successfully',
   })
-  async findAll() {
-    return await this.regionsService.findAll();
+  findAll() {
+    return this.regionsService.findAll();
   }
 
   @Get(':id')
@@ -44,10 +42,8 @@ export class RegionsController {
     status: 200,
     description: 'Region retrieved successfully',
   })
-  async findOne(@Param('id') id: string, @Res() res: express.Response) {
-    return res.status(200).json({
-      region: await this.regionsService.findOne(id),
-    });
+  findOne(@Param('id') id: string) {
+    return this.regionsService.findOne(id);
   }
 
   @Patch(':id')
@@ -56,20 +52,12 @@ export class RegionsController {
     description: 'Region updated successfully',
   })
   @ApiBody({ type: UpdateRegionDto })
-  async update(
-    @Param('id') id: string,
-    @Body() updateRegionDto: UpdateRegionDto,
-    @Res() res: express.Response,
-  ) {
-    return res.status(200).json({
-      regionUpdated: await this.regionsService.update(id, updateRegionDto),
-    });
+  update(@Param('id') id: string, @Body() updateRegionDto: UpdateRegionDto) {
+    return this.regionsService.update(id, updateRegionDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string, @Res() res: express.Response) {
-    return res.status(200).json({
-      regionRemoved: await this.regionsService.remove(id),
-    });
+  remove(@Param('id') id: string) {
+    return this.regionsService.remove(id);
   }
 }

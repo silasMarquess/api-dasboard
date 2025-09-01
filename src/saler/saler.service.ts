@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSalerDto } from './dto/create-saler.dto';
-import { salerTable } from 'src/db/schema';
+import { productTable, salerTable } from 'src/db/schema';
 import { eq } from 'drizzle-orm';
 import { db } from 'src/db';
 
@@ -19,19 +19,38 @@ export class SalerService {
   async findAll() {
     const sales = await db.query.salerTable.findMany({
       with: {
-        tablePrice: true,
         client: true,
+        tablePrice: {
+          with: {
+            product: true,
+          },
+        },
+        deliverys: {
+          with: {
+            deliveryMan: true,
+          },
+        },
       },
+      orderBy: (salerTable, { desc }) => [desc(salerTable.createdAt)],
     });
     return sales;
   }
 
   async findOne(id: string) {
-    const sales = await db.query.salerTable.findMany({
+    const sales = await db.query.salerTable.findFirst({
       where: eq(salerTable.id, id),
       with: {
-        tablePrice: true,
+        tablePrice: {
+          with: {
+            product: true,
+          },
+        },
         client: true,
+        deliverys: {
+          with: {
+            deliveryMan: true,
+          },
+        },
       },
     });
     return sales;

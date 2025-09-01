@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  HttpCode,
   UsePipes,
 } from '@nestjs/common';
 import { DeliveryManService } from './delivery-man.service';
@@ -26,9 +27,10 @@ export class DeliveryManController {
     description: 'Delivery man created successfully',
   })
   @ApiBody({ type: CreateDeliveryManDto })
-  @UsePipes(new ConvertToDatePipe())
-  async create(@Body() createDeliveryManDto: CreateDeliveryManDto) {
-    return await this.deliveryManService.create(createDeliveryManDto);
+  create(
+    @Body(new ConvertToDatePipe()) createDeliveryManDto: CreateDeliveryManDto,
+  ) {
+    return this.deliveryManService.create(createDeliveryManDto);
   }
 
   @Get()
@@ -36,8 +38,8 @@ export class DeliveryManController {
     status: 200,
     description: 'Delivery men retrieved successfully',
   })
-  async findAll() {
-    return await this.deliveryManService.findAll();
+  findAll() {
+    return this.deliveryManService.findAll();
   }
 
   @Get(':id')
@@ -45,8 +47,8 @@ export class DeliveryManController {
     status: 200,
     description: 'Delivery man retrieved successfully',
   })
-  async findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return await this.deliveryManService.findById(id);
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.deliveryManService.findById(id);
   }
 
   @Patch(':id')
@@ -55,15 +57,25 @@ export class DeliveryManController {
     description: 'Delivery man updated successfully',
   })
   @ApiBody({ type: UpdateDeliveryManDto })
-  async update(
+  update(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateDeliveryManDto: UpdateDeliveryManDto,
+    @Body(new ConvertToDatePipe()) updateDeliveryManDto: UpdateDeliveryManDto,
   ) {
-    return await this.deliveryManService.update(id, updateDeliveryManDto);
+    return this.deliveryManService.update(id, updateDeliveryManDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id', ParseUUIDPipe) id: string) {
-    return await this.deliveryManService.remove(id);
+  @HttpCode(204)
+  @ApiResponse({
+    status: 204,
+    description: 'Delivery man deleted successfully.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad Request. ID is not a valid UUID.',
+  })
+  @ApiResponse({ status: 404, description: 'Delivery man not found.' })
+  async remove(@Param('id', ParseUUIDPipe) id: string): Promise<void> {
+    await this.deliveryManService.remove(id);
   }
 }

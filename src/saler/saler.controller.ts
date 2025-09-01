@@ -22,34 +22,31 @@ export class SalerController {
   @UsePipes(new ConverttoDatePipe())
   @ApiBody({ type: CreateSalerDto })
   @ApiResponse({ status: 201, description: 'Saler created successfully' })
-  async create(@Body() createSalerDto: CreateSalerDto) {
-    return await this.salerService.create(createSalerDto);
+  create(@Body() createSalerDto: CreateSalerDto) {
+    return this.salerService.create(createSalerDto);
   }
 
   @Patch(':id')
   @UsePipes(new ConverttoDatePipe())
   @ApiBody({ type: CreateSalerDto })
   @ApiResponse({ status: 200, description: 'Saler updated successfully' })
-  async update(
-    @Param('id') id: string,
-    @Body() updateSalerDto: CreateSalerDto,
-  ) {
-    return await this.salerService.update(id, updateSalerDto);
+  update(@Param('id') id: string, @Body() updateSalerDto: CreateSalerDto) {
+    return this.salerService.update(id, updateSalerDto);
   }
 
   @Delete(':id')
   @ApiResponse({ status: 200, description: 'Saler deleted successfully' })
-  async remove(@Param('id', ParseUUIDPipe) id: string) {
-    return await this.salerService.remove(id);
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.salerService.remove(id);
   }
 
   @Get()
-  async findAll() {
-    return await this.salerService.findAll();
+  findAll() {
+    return this.salerService.findAll();
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return await this.salerService.findOne(id);
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.salerService.findOne(id);
   }
 }

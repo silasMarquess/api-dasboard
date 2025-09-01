@@ -6,7 +6,6 @@ import {
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { number } from 'zod';
 
 export const regionTable = pgTable('regions', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -147,12 +146,9 @@ export const salerTable = pgTable('salers', {
       onDelete: 'set null',
     })
     .notNull(),
-  id_client: uuid('id_client')
-    .references(() => clientTable.id, {
-      onDelete: 'set null',
-    })
-    .notNull(),
-
+  id_client: uuid('id_client').references(() => clientTable.id, {
+    onDelete: 'set null',
+  }),
   status: integer('status').notNull(), //0-abeta //1 - fechada 3-//cancelada
 
   createdAt: timestamp('created_at', { withTimezone: true })
@@ -186,7 +182,7 @@ export const deliveryTableRelations = relations(deliveryTable, ({ one }) => ({
   }),
 }));
 
-export const salerRelations = relations(salerTable, ({ one }) => ({
+export const salerRelations = relations(salerTable, ({ one, many }) => ({
   tablePrice: one(priceTable, {
     fields: [salerTable.id_tableprice],
     references: [priceTable.id],
@@ -196,6 +192,7 @@ export const salerRelations = relations(salerTable, ({ one }) => ({
     fields: [salerTable.id_client],
     references: [clientTable.id],
   }),
+  deliverys: many(deliveryTable),
 }));
 
 export const deliveryManTable = pgTable('delivery_mans', {

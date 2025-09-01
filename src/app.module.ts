@@ -13,6 +13,7 @@ import { ProductStockModule } from './product-stock/product-stock.module';
 import { TablePricesModule } from './table-prices/table-prices.module';
 import { DeliveryModule } from './delivery/delivery.module';
 import { ContractModule } from './contract/contract.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ContractModule } from './contract/contract.module';
     TablePricesModule,
     DeliveryModule,
     ContractModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

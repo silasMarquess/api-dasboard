@@ -23,30 +23,30 @@ export class ProductStockController {
     description: 'Product stock created successfully.',
   })
   @ApiBody({ type: CreateProductStockDto })
-  async create(@Body() createProductStockDto: CreateProductStockDto) {
-    return await this.productStockService.create(createProductStockDto);
+  create(@Body() createProductStockDto: CreateProductStockDto) {
+    return this.productStockService.create(createProductStockDto);
   }
 
   @Get()
-  async findAll() {
-    return await this.productStockService.findAll();
+  findAll() {
+    return this.productStockService.findAll();
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return await this.productStockService.findOne(id);
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.productStockService.findOne(id);
   }
 
   @Patch(':id')
-  async update(
+  update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateProductStockDto: UpdateProductStockDto,
   ) {
-    return await this.productStockService.update(id, updateProductStockDto);
+    return this.productStockService.update(id, updateProductStockDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id', ParseUUIDPipe) id: string) {
-    return await this.productStockService.remove(id);
+  remove(@Param('id', ParseUUIDPipe) id: string) {
+    return this.productStockService.remove(id);
   }
 }

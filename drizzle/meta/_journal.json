@@ -127,6 +127,13 @@
       "when": 1756411884390,
       "tag": "0017_sharp_microbe",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1756600271064,
+      "tag": "0018_cuddly_whiplash",
+      "breakpoints": true
     }
   ]
 }

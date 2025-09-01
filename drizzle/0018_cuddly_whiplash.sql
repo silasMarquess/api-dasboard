@@ -1,0 +1,1 @@
+ALTER TABLE "salers" ALTER COLUMN "id_client" DROP NOT NULL;
