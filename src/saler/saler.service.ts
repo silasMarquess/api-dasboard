@@ -3,6 +3,7 @@ import { CreateSalerDto } from './dto/create-saler.dto';
 import { productTable, salerTable } from 'src/db/schema';
 import { eq } from 'drizzle-orm';
 import { db } from 'src/db';
+import { UpdateSalerDto } from './dto/update-saler.dto';
 
 @Injectable()
 export class SalerService {
@@ -56,7 +57,7 @@ export class SalerService {
     return sales;
   }
 
-  async update(idSaler: string, updateSalerDto: CreateSalerDto) {
+  async update(idSaler: string, updateSalerDto: UpdateSalerDto) {
     const updatedSaler = await db
       .update(salerTable)
       .set(updateSalerDto)

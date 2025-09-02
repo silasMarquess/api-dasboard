@@ -160,14 +160,12 @@ export const deliveryTable = pgTable('deliveries', {
   id: uuid('id').primaryKey().defaultRandom(),
   id_saler: uuid('id_saler')
     .references(() => salerTable.id, {
-      onDelete: 'set null',
+      onDelete: 'cascade',
     })
     .notNull(),
-  id_deliveryman: uuid('id_deliveryman')
-    .references(() => deliveryManTable.id, {
-      onDelete: 'set null',
-    })
-    .notNull(),
+  id_deliveryman: uuid('id_deliveryman').references(() => deliveryManTable.id, {
+    onDelete: 'set null',
+  }),
 });
 
 export const deliveryTableRelations = relations(deliveryTable, ({ one }) => ({

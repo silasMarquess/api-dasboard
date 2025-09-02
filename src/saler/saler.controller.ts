@@ -13,24 +13,26 @@ import { SalerService } from './saler.service';
 import { CreateSalerDto } from './dto/create-saler.dto';
 import { ConverttoDatePipe } from './pipes/converrt-to-date-pipe';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
+import { UpdateSalerDto } from './dto/update-saler.dto';
 
 @Controller('saler')
 export class SalerController {
   constructor(private readonly salerService: SalerService) {}
 
   @Post()
-  @UsePipes(new ConverttoDatePipe())
   @ApiBody({ type: CreateSalerDto })
   @ApiResponse({ status: 201, description: 'Saler created successfully' })
-  create(@Body() createSalerDto: CreateSalerDto) {
+  create(@Body(new ConverttoDatePipe()) createSalerDto: CreateSalerDto) {
     return this.salerService.create(createSalerDto);
   }
 
   @Patch(':id')
-  @UsePipes(new ConverttoDatePipe())
-  @ApiBody({ type: CreateSalerDto })
+  @ApiBody({ type: UpdateSalerDto })
   @ApiResponse({ status: 200, description: 'Saler updated successfully' })
-  update(@Param('id') id: string, @Body() updateSalerDto: CreateSalerDto) {
+  update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body(new ConverttoDatePipe()) updateSalerDto: UpdateSalerDto,
+  ) {
     return this.salerService.update(id, updateSalerDto);
   }
 
