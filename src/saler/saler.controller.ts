@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  UsePipes,
   ParseUUIDPipe,
 } from '@nestjs/common';
 import { SalerService } from './saler.service';
