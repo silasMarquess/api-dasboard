@@ -36,7 +36,7 @@ export const clientRelations = relations(clientTable, ({ one, many }) => ({
     references: [regionTable.id],
   }),
   salers: many(salerTable),
-  constracts: many(constractTable),
+  constracts: many(contractTable),
 }));
 
 export const priceTable = pgTable('prices', {
@@ -56,30 +56,29 @@ export const priceTable = pgTable('prices', {
     .defaultNow(),
 });
 
-export const constractTable = pgTable('contracts', {
+export const contractTable = pgTable('contracts', {
   id: uuid('id').primaryKey().defaultRandom(),
   id_client: uuid('id_client').references(() => clientTable.id, {
     onDelete: 'set null',
   }),
-  id_product: uuid('id_product').references(() => productTable.id, {
+  id_productVariant: uuid('id_productVariant').references(() => priceTable.id, {
     onDelete: 'set null',
   }),
   quantity: integer('quantity').notNull(),
   status: integer('status').notNull(), //0-abeta //1 - fechada 3-//cancelada)
-  condition: integer('condition').notNull(),
   dateStart: timestamp('date_start', { withTimezone: true }).notNull(),
   dateEnd: timestamp('date_end', { withTimezone: true }),
 });
 
-export const constractRelations = relations(constractTable, ({ one }) => ({
+export const contractRelations = relations(contractTable, ({ one }) => ({
   client: one(clientTable, {
-    fields: [constractTable.id_client],
+    fields: [contractTable.id_client],
     references: [clientTable.id],
   }),
 
-  product: one(productTable, {
-    fields: [constractTable.id_product],
-    references: [productTable.id],
+  productVariant: one(priceTable, {
+    fields: [contractTable.id_productVariant],
+    references: [priceTable.id],
   }),
 }));
 
@@ -106,7 +105,7 @@ export const productTable = pgTable('products', {
 export const productTableRelations = relations(productTable, ({ many }) => ({
   productStock: many(productStockTable),
   prices: many(priceTable),
-  Contract: many(constractTable),
+  Contract: many(contractTable),
 }));
 
 export const productStockTable = pgTable('product_stocks', {

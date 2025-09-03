@@ -25,8 +25,9 @@ export class ContractController {
     description: 'The record has been successfully created.',
   })
   @ApiBody({ type: CreateContractDto })
-  @UsePipes(ConvertToDatePipe)
-  async create(@Body() createContractDto: CreateContractDto) {
+  async create(
+    @Body(new ConvertToDatePipe()) createContractDto: CreateContractDto,
+  ) {
     return await this.contractService.create(createContractDto);
   }
 

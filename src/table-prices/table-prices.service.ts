@@ -12,11 +12,20 @@ export class TablePricesService {
   }
 
   async findAll() {
-    return await db.select().from(priceTable);
+    return await db.query.priceTable.findMany({
+      with: {
+        product: true,
+      },
+    });
   }
 
   async findOne(id: string) {
-    return await db.select().from(priceTable).where(eq(priceTable.id, id));
+    return await db.query.priceTable.findMany({
+      where: eq(priceTable.id, id),
+      with: {
+        product: true,
+      },
+    });
   }
 
   async update(id: string, updateTablePriceDto: UpdateTablePriceDto) {

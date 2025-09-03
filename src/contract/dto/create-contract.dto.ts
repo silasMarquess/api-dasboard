@@ -5,15 +5,12 @@ export class CreateContractDto {
   id_client: string;
 
   @ApiProperty({ example: 'b8588da5-f509-4db5-8f00-a17133e2c0e8' })
-  id_product: string;
+  id_productVariant: string;
   @ApiProperty({ example: 2 })
   quantity: number;
 
   @ApiProperty({ example: 0 })
   status: number;
-
-  @ApiProperty({ example: 0 })
-  condition: number;
 
   @ApiProperty({ example: new Date() })
   dateStart: Date;

@@ -17,7 +17,11 @@ export class ClientsService {
         region: true,
         constracts: {
           with: {
-            product: true,
+            productVariant: {
+              with: {
+                product: true,
+              },
+            },
           },
         },
       },
@@ -32,7 +36,11 @@ export class ClientsService {
         region: true,
         constracts: {
           with: {
-            product: true,
+            productVariant: {
+              with: {
+                product: true,
+              },
+            },
           },
         },
       },
