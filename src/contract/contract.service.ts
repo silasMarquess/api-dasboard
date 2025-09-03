@@ -25,11 +25,12 @@ export class ContractService {
           },
         },
       },
+      orderBy: (contractTable, { desc }) => [desc(contractTable.dateStart)],
     });
   }
 
   async findOne(id: string) {
-    return await db.query.contractTable.findMany({
+    return await db.query.contractTable.findFirst({
       where: eq(contractTable.id, id),
       with: {
         client: true,

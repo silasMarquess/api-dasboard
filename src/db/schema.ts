@@ -4,8 +4,10 @@ import {
   pgTable,
   timestamp,
   uuid,
+  unique,
   varchar,
 } from 'drizzle-orm/pg-core';
+import ta from 'zod/v4/locales/ta.js';
 
 export const regionTable = pgTable('regions', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -56,19 +58,32 @@ export const priceTable = pgTable('prices', {
     .defaultNow(),
 });
 
-export const contractTable = pgTable('contracts', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  id_client: uuid('id_client').references(() => clientTable.id, {
-    onDelete: 'set null',
+export const contractTable = pgTable(
+  'contracts',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    id_client: uuid('id_client').references(() => clientTable.id, {
+      onDelete: 'set null',
+    }),
+    id_productVariant: uuid('id_productVariant').references(
+      () => priceTable.id,
+      {
+        onDelete: 'set null',
+      },
+    ),
+    quantity: integer('quantity').notNull(),
+    status: integer('status').notNull(), //0-abeta //1 - fechada 3-//cancelada)
+    dateStart: timestamp('date_start', { withTimezone: true }).notNull(),
+    dateEnd: timestamp('date_end', { withTimezone: true }),
+  },
+  (table) => ({
+    clientProductUnique: unique('client_product_unique_idx').on(
+      table.id_client,
+      table.id_productVariant,
+      table.status,
+    ),
   }),
-  id_productVariant: uuid('id_productVariant').references(() => priceTable.id, {
-    onDelete: 'set null',
-  }),
-  quantity: integer('quantity').notNull(),
-  status: integer('status').notNull(), //0-abeta //1 - fechada 3-//cancelada)
-  dateStart: timestamp('date_start', { withTimezone: true }).notNull(),
-  dateEnd: timestamp('date_end', { withTimezone: true }),
-});
+);
 
 export const contractRelations = relations(contractTable, ({ one }) => ({
   client: one(clientTable, {

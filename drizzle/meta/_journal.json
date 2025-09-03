@@ -148,6 +148,20 @@
       "when": 1756912370885,
       "tag": "0020_strange_wilson_fisk",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1756922466298,
+      "tag": "0021_aromatic_risque",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1756924119895,
+      "tag": "0022_loving_eternals",
+      "breakpoints": true
     }
   ]
 }

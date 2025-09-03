@@ -1,0 +1,1 @@
+ALTER TABLE "contracts" ADD CONSTRAINT "client_product_unique_idx" UNIQUE("id_client","id_productVariant");

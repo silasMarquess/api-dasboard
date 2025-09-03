@@ -1,0 +1,2 @@
+ALTER TABLE "contracts" DROP CONSTRAINT "client_product_unique_idx";--> statement-breakpoint
+ALTER TABLE "contracts" ADD CONSTRAINT "client_product_unique_idx" UNIQUE("id_client","id_productVariant","status");

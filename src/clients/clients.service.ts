@@ -23,6 +23,7 @@ export class ClientsService {
               },
             },
           },
+          orderBy: (contractTable, { desc }) => [desc(contractTable.dateStart)],
         },
       },
     });
@@ -42,6 +43,7 @@ export class ClientsService {
               },
             },
           },
+          orderBy: (contractTable, { desc }) => [desc(contractTable.dateStart)],
         },
       },
     });
