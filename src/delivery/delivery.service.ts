@@ -15,8 +15,36 @@ export class DeliveryService {
   async findAll() {
     return db.query.deliveryTable.findMany({
       with: {
-        saler: true,
-        deliveryMan: true,
+        saler: {
+          with: {
+            tablePrice: {
+              with: {
+                product: {
+                  columns: {
+                    description: true,
+                  },
+                },
+              },
+              columns: {
+                description: true,
+                priceInCents: true,
+              },
+            },
+          },
+          columns: {
+            quantity: true,
+            status: true,
+            id_client: false,
+          },
+        },
+        deliveryMan: {
+          columns: {
+            fullName: true,
+          },
+        },
+      },
+      columns: {
+        id: true,
       },
     });
   }
@@ -25,8 +53,16 @@ export class DeliveryService {
     return db.query.deliveryTable.findFirst({
       where: eq(deliveryTable.id, id),
       with: {
+        saler: {
+          with: {
+            tablePrice: {
+              with: {
+                product: true,
+              },
+            },
+          },
+        },
         deliveryMan: true,
-        saler: true,
       },
     });
   }

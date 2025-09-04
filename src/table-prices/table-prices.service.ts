@@ -20,7 +20,7 @@ export class TablePricesService {
   }
 
   async findOne(id: string) {
-    return await db.query.priceTable.findMany({
+    return await db.query.priceTable.findFirst({
       where: eq(priceTable.id, id),
       with: {
         product: true,

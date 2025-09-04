@@ -55,7 +55,8 @@ export const priceTable = pgTable('prices', {
     .defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true })
     .notNull()
-    .defaultNow(),
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 
 export const contractTable = pgTable(

@@ -13,7 +13,9 @@ import { ContractService } from './contract.service';
 import { CreateContractDto } from './dto/create-contract.dto';
 import { UpdateContractDto } from './dto/update-contract.dto';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
-import ConvertToDatePipe from './pipes/convert-to-date-pipe';
+import ConvertToDatePipe, {
+  ConvertToDateUpdateContractPipe,
+} from './pipes/convert-to-date-pipe';
 
 @Controller('contract')
 export class ContractController {
@@ -57,7 +59,8 @@ export class ContractController {
   @ApiBody({ type: UpdateContractDto })
   async update(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateContractDto: UpdateContractDto,
+    @Body(new ConvertToDateUpdateContractPipe())
+    updateContractDto: UpdateContractDto,
   ) {
     return await this.contractService.update(id, updateContractDto);
   }

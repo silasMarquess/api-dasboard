@@ -13,3 +13,15 @@ export default class ConvertToDatePipe implements PipeTransform {
     };
   }
 }
+
+export class ConvertToDateUpdateContractPipe implements PipeTransform {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  transform(value: CreateContractDto, metadata: ArgumentMetadata) {
+    const { dateEnd, ...rest } = value;
+
+    return {
+      ...rest,
+      dateEnd: dateEnd.toString() !== 'Invalid Date' ? new Date(dateEnd) : null,
+    };
+  }
+}
