@@ -15,6 +15,7 @@ import { DeliveryModule } from './delivery/delivery.module';
 import { ContractModule } from './contract/contract.module';
 import { AuthModule } from './auth/auth.module';
 import { StockDayModule } from './stock-day/stock-day.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { StockDayModule } from './stock-day/stock-day.module';
     ContractModule,
     AuthModule,
     StockDayModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

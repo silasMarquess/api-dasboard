@@ -45,6 +45,7 @@ export class DeliveryService {
       },
       columns: {
         id: true,
+        date: true,
       },
     });
   }

@@ -1,0 +1,1 @@
+ALTER TABLE "deliveries" ADD COLUMN "date" timestamp with time zone DEFAULT '2025-09-05T00:50:31.346Z' NOT NULL;

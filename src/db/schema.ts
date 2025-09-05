@@ -7,7 +7,6 @@ import {
   unique,
   varchar,
 } from 'drizzle-orm/pg-core';
-import ta from 'zod/v4/locales/ta.js';
 
 export const regionTable = pgTable('regions', {
   id: uuid('id').primaryKey().defaultRandom(),
@@ -91,7 +90,6 @@ export const contractRelations = relations(contractTable, ({ one }) => ({
     fields: [contractTable.id_client],
     references: [clientTable.id],
   }),
-
   productVariant: one(priceTable, {
     fields: [contractTable.id_productVariant],
     references: [priceTable.id],
@@ -181,6 +179,7 @@ export const deliveryTable = pgTable('deliveries', {
   id_deliveryman: uuid('id_deliveryman').references(() => deliveryManTable.id, {
     onDelete: 'set null',
   }),
+  date: timestamp('date', { withTimezone: true }).default(new Date()).notNull(),
 });
 
 export const deliveryTableRelations = relations(deliveryTable, ({ one }) => ({
