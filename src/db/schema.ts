@@ -85,15 +85,18 @@ export const contractTable = pgTable(
   }),
 );
 
-export const contractRelations = relations(contractTable, ({ one }) => ({
+export const contractRelations = relations(contractTable, ({ one, many }) => ({
   client: one(clientTable, {
     fields: [contractTable.id_client],
     references: [clientTable.id],
   }),
+
   productVariant: one(priceTable, {
     fields: [contractTable.id_productVariant],
     references: [priceTable.id],
   }),
+
+  stockMoviments: many(StockDayMovimentTable),
 }));
 
 export const priceRelations = relations(priceTable, ({ one, many }) => ({
@@ -102,6 +105,7 @@ export const priceRelations = relations(priceTable, ({ one, many }) => ({
     references: [productTable.id],
   }),
   salers: many(salerTable),
+  contracts: many(contractTable),
 }));
 
 export const productTable = pgTable('products', {
@@ -120,6 +124,7 @@ export const productTableRelations = relations(productTable, ({ many }) => ({
   productStock: many(productStockTable),
   prices: many(priceTable),
   Contract: many(contractTable),
+  stocksDay: many(stockDayTable),
 }));
 
 export const productStockTable = pgTable('product_stocks', {
@@ -139,11 +144,13 @@ export const productStockTable = pgTable('product_stocks', {
 
 export const productStockTableRelations = relations(
   productStockTable,
-  ({ one }) => ({
+  ({ one, many }) => ({
     product: one(productTable, {
       fields: [productStockTable.id_product],
       references: [productTable.id],
     }),
+
+    stockDayMoviments: many(StockDayMovimentTable),
   }),
 );
 
@@ -220,3 +227,77 @@ export const deliveryManTable = pgTable('delivery_mans', {
 export const deliveryManRelations = relations(deliveryManTable, ({ many }) => ({
   deliveries: many(deliveryTable),
 }));
+
+export const stockDayTable = pgTable(
+  'stockDays',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    startStock: integer('start_stock').notNull(),
+    date: timestamp('date', { withTimezone: true }).notNull().defaultNow(),
+    status: integer('status').notNull(),
+    id_product: uuid('id_product')
+      .references(() => productTable.id, {
+        onDelete: 'cascade',
+      })
+      .notNull(),
+  },
+  (table) => ({
+    statusDateUnique: unique('date_status_unique_idx').on(
+      table.status,
+      table.date,
+      table.id_product,
+    ),
+  }),
+);
+
+export const stockDayRelations = relations(stockDayTable, ({ one, many }) => ({
+  stockDayMoviments: many(StockDayMovimentTable),
+  product: one(productTable, {
+    fields: [stockDayTable.id_product],
+    references: [productTable.id],
+  }),
+}));
+
+export const StockDayMovimentTable = pgTable('stockDayMoviments', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  quantity: integer('quantity').notNull(),
+  date: timestamp('date', { withTimezone: true }).notNull().defaultNow(),
+  type: integer('type').notNull(),
+  typeMov: integer('type_mov').notNull(),
+  id_stockProduct: uuid('id_stockProduct').references(
+    () => productStockTable.id,
+    {
+      onDelete: 'set null',
+    },
+  ),
+  id_contract: uuid('id_contract').references(() => contractTable.id, {
+    onDelete: 'set null',
+  }),
+  id_stockDay: uuid('id_stockDay')
+    .references(() => stockDayTable.id, {
+      onDelete: 'cascade',
+    })
+    .notNull(),
+
+  createdAt: timestamp('createdAt').notNull().defaultNow(),
+});
+
+export const StockDayMovimentTableRelations = relations(
+  StockDayMovimentTable,
+  ({ one }) => ({
+    stockDay: one(stockDayTable, {
+      fields: [StockDayMovimentTable.id_stockDay],
+      references: [stockDayTable.id],
+    }),
+
+    contract: one(contractTable, {
+      fields: [StockDayMovimentTable.id_contract],
+      references: [contractTable.id],
+    }),
+
+    product_stock: one(productStockTable, {
+      fields: [StockDayMovimentTable.id_stockProduct],
+      references: [productStockTable.id],
+    }),
+  }),
+);

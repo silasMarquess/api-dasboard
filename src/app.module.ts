@@ -16,6 +16,7 @@ import { ContractModule } from './contract/contract.module';
 import { AuthModule } from './auth/auth.module';
 import { StockDayModule } from './stock-day/stock-day.module';
 import { UsersModule } from './users/users.module';
+import { StockMovimentModule } from './stock-moviment/stock-moviment.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { UsersModule } from './users/users.module';
     AuthModule,
     StockDayModule,
     UsersModule,
+    StockMovimentModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,34 +1,47 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { StockDayService } from './stock-day.service';
 import { CreateStockDayDto } from './dto/create-stock-day.dto';
 import { UpdateStockDayDto } from './dto/update-stock-day.dto';
+import { ConverttoDatePipe } from './pipes/converrt-to-date-pipe';
 
 @Controller('stock-day')
 export class StockDayController {
   constructor(private readonly stockDayService: StockDayService) {}
 
   @Post()
-  create(@Body() createStockDayDto: CreateStockDayDto) {
+  create(@Body(new ConverttoDatePipe()) createStockDayDto: CreateStockDayDto) {
     return this.stockDayService.create(createStockDayDto);
   }
 
   @Get()
-  findAll() {
-    return this.stockDayService.findAll();
+  findAll(@Query('productId') productId?: string) {
+    return this.stockDayService.findAll({ productId });
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.stockDayService.findOne(+id);
+    return this.stockDayService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateStockDayDto: UpdateStockDayDto) {
-    return this.stockDayService.update(+id, updateStockDayDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateStockDayDto: UpdateStockDayDto,
+  ) {
+    return this.stockDayService.update(id, updateStockDayDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.stockDayService.remove(+id);
+    return this.stockDayService.remove(id);
   }
 }

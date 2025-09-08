@@ -1,26 +1,68 @@
 import { Injectable } from '@nestjs/common';
 import { CreateStockDayDto } from './dto/create-stock-day.dto';
 import { UpdateStockDayDto } from './dto/update-stock-day.dto';
+import { db } from 'src/db';
+import { stockDayTable } from 'src/db/schema';
+import { and, eq, SQL } from 'drizzle-orm';
 
 @Injectable()
 export class StockDayService {
-  create(createStockDayDto: CreateStockDayDto) {
-    return 'This action adds a new stockDay';
+  async create(createStockDayDto: CreateStockDayDto) {
+    return await db.insert(stockDayTable).values(createStockDayDto).returning();
   }
 
-  findAll() {
-    return `This action returns all stockDay`;
+  async findAll(filters: { productId?: string }) {
+    const { productId } = filters;
+
+    const conditions: SQL[] = [];
+
+    if (productId) {
+      conditions.push(eq(stockDayTable.id_product, productId));
+    }
+
+    return db.query.stockDayTable.findMany({
+      where: conditions.length > 0 ? and(...conditions) : undefined,
+      with: {
+        product: true,
+        stockDayMoviments: {
+          columns: {
+            id_stockDay: false,
+          },
+        },
+      },
+      columns: {
+        id_product: false,
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} stockDay`;
+  async findOne(id: string) {
+    return db.query.stockDayTable.findFirst({
+      where: eq(stockDayTable.id, id),
+      with: {
+        product: true,
+        stockDayMoviments: {
+          with: {
+            product_stock: {
+              with: {
+                product: true,
+              },
+            },
+          },
+        },
+      },
+    });
   }
 
-  update(id: number, updateStockDayDto: UpdateStockDayDto) {
-    return `This action updates a #${id} stockDay`;
+  async update(id: string, updateStockDayDto: UpdateStockDayDto) {
+    return await db
+      .update(stockDayTable)
+      .set(updateStockDayDto)
+      .where(eq(stockDayTable.id, id))
+      .returning();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} stockDay`;
+  async remove(id: string) {
+    return await db.delete(stockDayTable).where(eq(stockDayTable.id, id));
   }
 }

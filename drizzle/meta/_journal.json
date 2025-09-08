@@ -169,6 +169,62 @@
       "when": 1757033431367,
       "tag": "0023_thin_night_nurse",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1757171573701,
+      "tag": "0024_tearful_stature",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1757171821072,
+      "tag": "0025_workable_banshee",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1757180656801,
+      "tag": "0026_kind_silver_surfer",
+      "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1757180949536,
+      "tag": "0027_mysterious_kate_bishop",
+      "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1757337455122,
+      "tag": "0028_luxuriant_clint_barton",
+      "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1757342620136,
+      "tag": "0029_awesome_doctor_octopus",
+      "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1757349424117,
+      "tag": "0030_sleepy_sunfire",
+      "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1757349714605,
+      "tag": "0031_careless_jigsaw",
+      "breakpoints": true
     }
   ]
 }
