@@ -8,14 +8,16 @@ import {
   Delete,
   ParseUUIDPipe,
   UsePipes,
+  Query,
 } from '@nestjs/common';
 import { ContractService } from './contract.service';
 import { CreateContractDto } from './dto/create-contract.dto';
 import { UpdateContractDto } from './dto/update-contract.dto';
-import { ApiBody, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import ConvertToDatePipe, {
   ConvertToDateUpdateContractPipe,
 } from './pipes/convert-to-date-pipe';
+import { Filters } from './dto/filter-params-dto';
 
 @Controller('contract')
 export class ContractController {
@@ -38,8 +40,28 @@ export class ContractController {
     status: 200,
     description: 'The records have been successfully retrieved.',
   })
-  async findAll() {
-    return await this.contractService.findAll();
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'dateStart',
+    required: false,
+    type: Date,
+  })
+  @ApiQuery({
+    name: 'dateEnd',
+    required: false,
+    type: Date,
+  })
+  async findAll(@Query() filters?: Filters) {
+    return await this.contractService.findAll(filters || {});
   }
 
   @Get(':id')
