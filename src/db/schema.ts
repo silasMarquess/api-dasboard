@@ -72,6 +72,7 @@ export const contractTable = pgTable(
       },
     ),
     quantity: integer('quantity').notNull(),
+    stockNow: integer('stock_now').notNull(),
     status: integer('status').notNull(), //0-abeta //1 - fechada 3-//cancelada)
     dateStart: timestamp('date_start', { withTimezone: true }).notNull(),
     dateEnd: timestamp('date_end', { withTimezone: true }),

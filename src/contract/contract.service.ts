@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { CreateContractDto } from './dto/create-contract.dto';
 import { UpdateContractDto } from './dto/update-contract.dto';
 import { db } from 'src/db';
-import { contractTable, clientTable } from 'src/db/schema';
-import { and, eq, gte, lte, SQL, sql } from 'drizzle-orm';
+import { contractTable } from 'src/db/schema';
+import { and, eq, gte, lte, SQL } from 'drizzle-orm';
 import { Filters } from './dto/filter-params-dto';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class ContractService {
   async findAll(filters: Filters) {
     const { status, dateStart, dateEnd } = filters;
 
-    const conditions: SQL[] = []; //aqui adiciono todas as minhas condições ou nemhuma
+    const conditions: SQL[] = [];
 
     if (status !== undefined) {
       conditions.push(eq(contractTable.status, status));
@@ -32,7 +32,7 @@ export class ContractService {
     }
 
     return await db.query.contractTable.findMany({
-      where: and(...conditions), //se o objeto de filtro for {}, então ele trás tudo
+      where: and(...conditions),
       with: {
         client: true,
         productVariant: {

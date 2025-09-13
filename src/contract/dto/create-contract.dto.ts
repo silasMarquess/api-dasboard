@@ -10,6 +10,9 @@ export class CreateContractDto {
   quantity: number;
 
   @ApiProperty({ example: 0 })
+  stockNow: number;
+
+  @ApiProperty({ example: 0 })
   status: number;
 
   @ApiProperty({ example: new Date() })

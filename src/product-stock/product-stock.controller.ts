@@ -7,11 +7,13 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  Query,
 } from '@nestjs/common';
 import { ProductStockService } from './product-stock.service';
 import { CreateProductStockDto } from './dto/create-product-stock.dto';
 import { UpdateProductStockDto } from './dto/update-product-stock.dto';
-import { ApiBody, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { ProductStockFilter } from './dto/fillters.producStock-dto';
 
 @Controller('product-stock')
 export class ProductStockController {
@@ -28,8 +30,13 @@ export class ProductStockController {
   }
 
   @Get()
-  findAll() {
-    return this.productStockService.findAll();
+  @ApiQuery({
+    name: 'id_product',
+    required: false,
+    type: String,
+  })
+  findAll(@Query() filter?: ProductStockFilter) {
+    return this.productStockService.findAll(filter);
   }
 
   @Get(':id')
