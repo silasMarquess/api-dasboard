@@ -6,11 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { StockMovimentService } from './stock-moviment.service';
 import { CreateStockMovimentDto } from './dto/create-stock-moviment.dto';
 import { UpdateStockMovimentDto } from './dto/update-stock-moviment.dto';
-import { ApiBody, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiQuery, ApiResponse } from '@nestjs/swagger';
+import ConvertToDatePipe from './pipes/date-convert.pipe';
 
 @Controller('stock-moviment')
 export class StockMovimentController {
@@ -22,13 +24,21 @@ export class StockMovimentController {
     description: 'The record has been successfully created.',
   })
   @ApiBody({ type: CreateStockMovimentDto })
-  create(@Body() createStockMovimentDto: CreateStockMovimentDto) {
+  create(
+    @Body(new ConvertToDatePipe())
+    createStockMovimentDto: CreateStockMovimentDto,
+  ) {
     return this.stockMovimentService.create(createStockMovimentDto);
   }
 
   @Get()
-  findAll() {
-    return this.stockMovimentService.findAll();
+  @ApiQuery({
+    name: 'id_stockDay',
+    required: false,
+    type: String,
+  })
+  findAll(@Query('id_stockDay') id_stockDay?: string) {
+    return this.stockMovimentService.findAll({ id_stockDay });
   }
 
   @Get(':id')

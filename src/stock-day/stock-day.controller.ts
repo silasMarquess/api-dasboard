@@ -12,6 +12,7 @@ import { StockDayService } from './stock-day.service';
 import { CreateStockDayDto } from './dto/create-stock-day.dto';
 import { UpdateStockDayDto } from './dto/update-stock-day.dto';
 import { ConverttoDatePipe } from './pipes/converrt-to-date-pipe';
+import { ApiQuery } from '@nestjs/swagger';
 
 @Controller('stock-day')
 export class StockDayController {
@@ -23,6 +24,11 @@ export class StockDayController {
   }
 
   @Get()
+  @ApiQuery({
+    name: 'productId',
+    required: false,
+    type: String,
+  })
   findAll(@Query('productId') productId?: string) {
     return this.stockDayService.findAll({ productId });
   }

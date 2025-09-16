@@ -3,7 +3,8 @@ import { CreateStockMovimentDto } from './dto/create-stock-moviment.dto';
 import { UpdateStockMovimentDto } from './dto/update-stock-moviment.dto';
 import { db } from 'src/db';
 import { StockDayMovimentTable } from 'src/db/schema';
-import { eq } from 'drizzle-orm';
+import { and, eq, SQL } from 'drizzle-orm';
+import { StockProducFilltersDTO } from './dto/stock-moviment-fillters';
 
 @Injectable()
 export class StockMovimentService {
@@ -13,12 +14,27 @@ export class StockMovimentService {
       .values(createStockMovimentDto);
   }
 
-  async findAll() {
-    return await db.query.StockDayMovimentTable.findMany();
+  async findAll(filters?: StockProducFilltersDTO) {
+    const { id_stockDay } = filters || {};
+    const conditions: SQL[] = [];
+
+    if (id_stockDay) {
+      conditions.push(eq(StockDayMovimentTable.id_stockDay, id_stockDay));
+    }
+
+    return await db.query.StockDayMovimentTable.findMany({
+      where: and(...conditions),
+      with: {
+        product_stock: true,
+      },
+      orderBy: (StockDayMovimentTable, { desc }) => [
+        desc(StockDayMovimentTable.date),
+      ],
+    });
   }
 
   async findOne(id: string) {
-    return await db.query.StockDayMovimentTable.findMany({
+    return await db.query.StockDayMovimentTable.findFirst({
       where: eq(StockDayMovimentTable.id, id),
       with: {
         product_stock: {

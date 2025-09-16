@@ -24,11 +24,6 @@ export class StockDayService {
       where: conditions.length > 0 ? and(...conditions) : undefined,
       with: {
         product: true,
-        stockDayMoviments: {
-          columns: {
-            id_stockDay: false,
-          },
-        },
       },
       columns: {
         id_product: false,
@@ -41,15 +36,6 @@ export class StockDayService {
       where: eq(stockDayTable.id, id),
       with: {
         product: true,
-        stockDayMoviments: {
-          with: {
-            product_stock: {
-              with: {
-                product: true,
-              },
-            },
-          },
-        },
       },
     });
   }

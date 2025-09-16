@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
-  UsePipes,
   Query,
 } from '@nestjs/common';
 import { ContractService } from './contract.service';
