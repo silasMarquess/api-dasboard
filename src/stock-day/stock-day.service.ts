@@ -28,6 +28,7 @@ export class StockDayService {
       columns: {
         id_product: false,
       },
+      orderBy: (stockDayTable, { desc }) => [desc(stockDayTable.date)],
     });
   }
 
@@ -36,6 +37,7 @@ export class StockDayService {
       where: eq(stockDayTable.id, id),
       with: {
         product: true,
+        stockDayMoviments: true,
       },
     });
   }
