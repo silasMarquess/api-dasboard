@@ -11,7 +11,6 @@ import {
 import { RegionsService } from './regions.service';
 import { CreateRegionDto } from './dto/create-region.dto';
 import { UpdateRegionDto } from './dto/update-region.dto';
-import express from 'express';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
 
 @Controller('regions')

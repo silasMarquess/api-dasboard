@@ -1,4 +1,5 @@
 import { relations } from 'drizzle-orm';
+import { text } from 'drizzle-orm/pg-core';
 import {
   integer,
   pgTable,
@@ -124,7 +125,6 @@ export const productTable = pgTable('products', {
 export const productTableRelations = relations(productTable, ({ many }) => ({
   productStock: many(productStockTable),
   prices: many(priceTable),
-  Contract: many(contractTable),
   stocksDay: many(stockDayTable),
 }));
 
@@ -302,3 +302,11 @@ export const StockDayMovimentTableRelations = relations(
     }),
   }),
 );
+
+export const userTable = pgTable('users', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  username: text('username').notNull(),
+  email: text('email').notNull().unique(),
+  passwordHash: text('passwordHash').notNull(),
+  role: integer('role').notNull().default(0),
+});

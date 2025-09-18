@@ -1,0 +1,2 @@
+ALTER TABLE "contracts" ALTER COLUMN "date_end" SET DEFAULT '2025-09-16T22:25:48.632Z';--> statement-breakpoint
+ALTER TABLE "deliveries" ALTER COLUMN "date" SET DEFAULT '2025-09-16T22:25:48.634Z';

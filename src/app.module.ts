@@ -17,9 +17,11 @@ import { AuthModule } from './auth/auth.module';
 import { StockDayModule } from './stock-day/stock-day.module';
 import { UsersModule } from './users/users.module';
 import { StockMovimentModule } from './stock-moviment/stock-moviment.module';
+import { SharedModule } from './shared/shared.module';
 
 @Module({
   imports: [
+    AuthModule,
     SalerModule,
     UploadModule,
     DataProcessModule,
@@ -35,6 +37,7 @@ import { StockMovimentModule } from './stock-moviment/stock-moviment.module';
     StockDayModule,
     UsersModule,
     StockMovimentModule,
+    SharedModule,
   ],
   controllers: [AppController],
   providers: [AppService],
