@@ -113,13 +113,13 @@ export const priceRelations = relations(priceTable, ({ one, many }) => ({
 export const productTable = pgTable('products', {
   id: uuid('id').primaryKey().defaultRandom(),
   description: varchar('description', { length: 100 }).notNull().unique(),
-
+  staticStock: integer('static_stock').notNull(),
   createdAt: timestamp('created_at', { withTimezone: true })
     .notNull()
     .defaultNow(),
   updatedAt: timestamp('updated_at', { withTimezone: true })
-    .notNull()
-    .defaultNow(),
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 
 export const productTableRelations = relations(productTable, ({ many }) => ({
@@ -130,7 +130,7 @@ export const productTableRelations = relations(productTable, ({ many }) => ({
 
 export const productStockTable = pgTable('product_stocks', {
   id: uuid('id').primaryKey().defaultRandom(),
-  description: varchar('description', { length: 100 }).notNull().unique(),
+  description: varchar('description', { length: 100 }).notNull(),
   stock: integer('stock').notNull().default(0),
   id_product: uuid('id_product').references(() => productTable.id, {
     onDelete: 'cascade',

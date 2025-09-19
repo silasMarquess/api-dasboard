@@ -37,7 +37,11 @@ export class StockDayService {
       where: eq(stockDayTable.id, id),
       with: {
         product: true,
-        stockDayMoviments: true,
+        stockDayMoviments: {
+          with: {
+            product_stock: true,
+          },
+        },
       },
     });
   }

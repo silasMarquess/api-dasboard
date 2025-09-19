@@ -24,7 +24,11 @@ export class ProductsService {
     return await db.query.productTable.findFirst({
       where: eq(productTable.id, id),
       with: {
-        productStock: true,
+        productStock: {
+          with: {
+            stockDayMoviments: true,
+          },
+        },
         prices: true,
       },
     });
