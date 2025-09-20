@@ -10,9 +10,9 @@ import {
 } from '@nestjs/common';
 import { SalerService } from './saler.service';
 import { CreateSalerDto } from './dto/create-saler.dto';
-import { ConverttoDatePipe } from './pipes/converrt-to-date-pipe';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { UpdateSalerDto } from './dto/update-saler.dto';
+import { ConverttoDatePipe } from './pipes/converrt-to-date-pipe';
 
 @Controller('saler')
 export class SalerController {

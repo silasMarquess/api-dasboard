@@ -19,6 +19,15 @@ async function bootstrap() {
     .setTitle('API dashboard')
     .setDescription('API de processamento de dados')
     .setVersion('1.0')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        description: 'Enter JWT token',
+      },
+      'access-token',
+    )
     .build();
 
   const documentFactory = () => SwaggerModule.createDocument(app, swagerConfif);
